@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant Login | CrocoPay</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --emerald: #2ecc71;
+            --emerald-dark: #27ae60;
+            --emerald-light: #58d68d;
+            --soft-white: #f9f9f9;
+            --light-gray: #ecf0f1;
+            --text-dark: #2c3e50;
+            --text-medium: #34495e;
+            --text-light: #7f8c8d;
+            --error: #e74c3c;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: var(--soft-white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 440px;
+            padding: 40px;
+            margin: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--emerald), var(--emerald-light));
+        }
+        
+        .logo-header {
+            text-align: center;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background-color: var(--emerald);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(46, 204, 113, 0.2);
+        }
+        
+        .logo i {
+            color: white;
+            font-size: 28px;
+        }
+        
+        .logo-header h1 {
+            color: var(--text-dark);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .logo-header p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: var(--text-medium);
+            font-size: 20px;
+            position: relative;
+        }
+        
+        h2::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--emerald);
+            margin: 10px auto 0;
+            border-radius: 3px;
+        }
+        
+        .error-message {
+            background-color: #fdecea;
+            color: var(--error);
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-align: center;
+            border: 1px solid #fadbd8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .error-message i {
+            margin-right: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-medium);
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            background-color: var(--soft-white);
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            color: var(--text-dark);
+        }
+        
+        input::placeholder {
+            color: var(--text-light);
+            opacity: 0.7;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--emerald-light);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 40px;
+            color: var(--emerald);
+            font-size: 18px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, var(--emerald), var(--emerald-light));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        button i {
+            margin-right: 8px;
+        }
+        
+        button:hover {
+            background: linear-gradient(to right, var(--emerald-dark), var(--emerald));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(46, 204, 113, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .footer a {
+            color: var(--emerald);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .crocodile-icon {
+            position: absolute;
+            opacity: 0.03;
+            z-index: 0;
+        }
+        
+        .crocodile-icon.top-right {
+            top: 20px;
+            right: 20px;
+            font-size: 80px;
+            transform: rotate(15deg);
+        }
+        
+        .crocodile-icon.bottom-left {
+            bottom: 20px;
+            left: 20px;
+            font-size: 60px;
+            transform: rotate(-15deg);
+        }
+        
+        .form-container {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <i class="fas fa-crocodile crocodile-icon top-right"></i>
+        <i class="fas fa-crocodile crocodile-icon bottom-left"></i>
+        
+        <div class="logo-header">
+            <div class="logo">
+                 <i class="fas fa-sign-in-alt"></i>
+            </div>
+            <h1>CrocoPay</h1>
+        </div>
+        
+        <div class="form-container">
+            <h2>Login to Your Account</h2>
+            
+            <?php if(session()->getFlashdata('error')): ?>
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> <?= session()->getFlashdata('error') ?>
+                </div>
+            <?php endif; ?>
+            
+            <form method="post" action="<?= base_url('auth/doLogin') ?>">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="email" name="email" required placeholder="merchant@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" required placeholder="••••••••">
+                </div>
+                
+                <button type="submit">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+            
+            <div class="footer">
+                <p>© 2023 CrocoPay | <a href="#">Forgot password?</a> | <a href="#">Help Center</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
