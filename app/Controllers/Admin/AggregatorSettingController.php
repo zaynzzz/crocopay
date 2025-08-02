@@ -17,7 +17,7 @@ class AggregatorSettingController extends BaseController
     public function index()
     {
         $data['aggregators'] = $this->model->findAll();
-        return view('admin/aggregator_settings', $data);
+        return view('Admin/aggregator_settings', $data);
     }
 
     public function update()
