@@ -24,53 +24,57 @@ class CronosService extends BaseAggregator
         return $this->createQris($orderId, $amount, $description);
     }
 
-    public function createQris(string $orderId, int $amount, string $description): array
-    {
-        $client = Services::curlrequest();
+   public function createQris(string $orderId, int $amount, string $description): array
+{
+    $client = Services::curlrequest();
 
-        $body = [
-            'reference' => $orderId,
-            'amount' => $amount,
-            'expiryMinutes' => 30,
-            'viewName' => $description,
-            'additionalInfo' => [
-                'callback' => $this->callback
-            ]
-        ];
-
-        // JSON encode and escape slashes like in Postman pre-request
-        $bodyJson = json_encode($body);
-        $escapedJson = str_replace('/', '\\/', $bodyJson);
-
-        // Signature = HMAC_SHA512(key + escaped_json, token)
-        $signatureBase = $this->key . $escapedJson;
-        $signature = hash_hmac('sha512', $signatureBase, $this->token);
-
-        try {
-            $response = $client->post('https://api.cronosengine.com/api/qris', [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'On-Key'        => $this->key,
-                    'On-Token'      => $this->token,
-                    'On-Signature'  => $signature,
-                ],
-                'body' => $bodyJson
-            ]);
-
-            $result = json_decode($response->getBody(), true);
-
-            return [
-                'reference' => $orderId,
-                'id'        => $result['responseData']['id'] ?? null,
-                'qris'      => $result['responseData']['qris'] ?? null,
-                'image'     => $result['responseData']['image'] ?? null,
-                'expired'   => $result['responseData']['expired'] ?? null,
-                'provider'  => 'cronos'
-            ];
-        } catch (\Throwable $e) {
-            return [
-                'error' => 'Cronos API request failed: ' . $e->getMessage()
-            ];
-        }
+    if ($amount < 1000) {
+        log_message('error', 'Amount too low: ' . $amount);
+        return ['error' => 'Amount must be at least 1000'];
     }
+
+    $body = [
+        'reference' => $orderId,
+        'amount' => $amount,
+        'expiryMinutes' => 30,
+        'viewName' => $description,
+        'additionalInfo' => ['callback' => $this->callback]
+    ];
+
+    $bodyJson = json_encode($body, JSON_UNESCAPED_SLASHES);
+    $escapedJson = str_replace('/', '\\/', $bodyJson);
+    $signatureBase = $this->key . $escapedJson;
+    $signature = hash_hmac('sha512', $signatureBase, $this->token);
+
+    log_message('debug', 'Cronos Request: ' . $bodyJson . ' | Signature: ' . $signature);
+
+    try {
+        $response = $client->post('https://api.cronosengine.com/api/qris', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'On-Key' => $this->key,
+                'On-Token' => $this->token,
+                'On-Signature' => $signature,
+            ],
+            'body' => $bodyJson
+        ]);
+
+        $result = json_decode($response->getBody(), true);
+        log_message('debug', 'Cronos Response: ' . print_r($result, true));
+
+        return [
+            'reference' => $orderId,
+            'id' => $result['responseData']['id'] ?? null,
+            'qris' => $result['responseData']['qris'] ?? null,
+            'image' => $result['responseData']['image'] ?? null,
+            'expired' => $result['responseData']['expired'] ?? null,
+            'provider' => 'cronos'
+        ];
+    } catch (\Throwable $e) {
+        log_message('error', 'Cronos API error: ' . $e->getMessage() . ' | Response: ' . $response->getBody());
+        return [
+            'error' => 'Cronos API request failed: ' . $e->getMessage()
+        ];
+    }
+}
 }
