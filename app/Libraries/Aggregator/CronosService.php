@@ -3,6 +3,7 @@
 namespace App\Libraries\Aggregator;
 
 use CodeIgniter\HTTP\CURLRequest;
+use Config\Services;
 
 class CronosService extends BaseAggregator
 {
@@ -21,39 +22,48 @@ class CronosService extends BaseAggregator
     // Ini method dari abstract class BaseAggregator
     public function createTransaction(string $orderId, int $amount, string $description): array
     {
-        return $this->createQris($orderId, $amount, $orderId);
+        return $this->createQris($orderId, $amount, $description);
     }
 
-   public function createQris(string $orderId, int $amount, string $description): array
-{
-    $params = [
-        'payment_type' => 'qris',
-        'transaction_details' => [
-            'order_id'     => $orderId,
-            'gross_amount' => $amount, // HARUS int
-        ],
-        'qris' => [
-            'acquirer' => 'gopay', // opsional
-        ]
-    ];
+    public function createQris(string $orderId, int $amount, string $description): array
+    {
+        $client = Services::curlrequest();
 
-    try {
-        $response = CoreApi::charge($params);
-
-        return [
-            'reference' => $orderId,
-            'id'        => $response->transaction_id ?? null,
-            'qris'      => $response->actions[0]->url ?? null,
-            'image'     => null, // Midtrans tidak menyediakan QR base64
-            'expired'   => $response->expiry_time ?? null, // kalau tidak ada, isi null
-            'provider'  => 'midtrans'
+        $body = [
+            'amount'       => $amount,
+            'external_id'  => $orderId,
+            'callback_url' => $this->callback,
+            'description'  => $description
         ];
 
-    } catch (\Exception $e) {
-        return [
-            'error' => 'Midtrans API request failed: ' . $e->getMessage()
-        ];
+        $signature = hash_hmac('sha512', json_encode($body), $this->token);
+
+        try {
+            $response = $client->post('https://cronos.example.com/api/qris/create', [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Api-Key'       => $this->key,
+                    'Api-Token'     => $this->token,
+                    'Signature'     => $signature,
+                ],
+                'body' => json_encode($body),
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+
+            return [
+                'reference' => $orderId,
+                'id'        => $result['responseData']['transaction_id'] ?? null,
+                'qris'      => $result['responseData']['qris']['qr_string'] ?? null,
+                'image'     => $result['responseData']['qris']['qr_base64'] ?? null,
+                'expired'   => $result['responseData']['expired_at'] ?? null,
+                'provider'  => 'cronos'
+            ];
+
+        } catch (\Throwable $e) {
+            return [
+                'error' => 'Cronos API request failed: ' . $e->getMessage()
+            ];
+        }
     }
-}
-
 }
