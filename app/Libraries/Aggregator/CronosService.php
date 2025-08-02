@@ -39,7 +39,7 @@ class CronosService extends BaseAggregator
         $signature = hash_hmac('sha512', json_encode($body), $this->token);
 
         try {
-            $response = $client->post('https://cronos.example.com/api/qris/create', [
+            $response = $client->post('https://api.cronosengine.com/api/qris/create', [
                 'headers' => [
                     'Content-Type'  => 'application/json',
                     'Api-Key'       => $this->key,
