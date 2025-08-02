@@ -126,9 +126,14 @@
         {
             "name": "midtrans/midtrans-php",
             "version": "2.6.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Midtrans/midtrans-php.git",
+                "reference": "8ed7fc58ff1ababe675da17acf8233f4028eb3be"
+            },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.cloud.tencent.com/repository/composer/midtrans/midtrans-php/2.6.2/midtrans-midtrans-php-2.6.2.zip",
+                "url": "https://api.github.com/repos/Midtrans/midtrans-php/zipball/8ed7fc58ff1ababe675da17acf8233f4028eb3be",
                 "reference": "8ed7fc58ff1ababe675da17acf8233f4028eb3be",
                 "shasum": ""
             },
@@ -149,6 +154,7 @@
                     "Midtrans\\": "Midtrans/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
