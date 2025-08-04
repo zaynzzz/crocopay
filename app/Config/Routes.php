@@ -66,3 +66,13 @@ $routes->get('/admin/aggregator/toggle/(:segment)', 'Admin\AggregatorSettingCont
 $routes->post('webhook/midtrans', 'Webhook\MidtransWebhook::index');
 $routes->post('admin/aggregator/toggle/(:segment)', 'Admin\AggregatorSettingController::toggle/$1');
 $routes->get('admin/aggregator/toggle/(:segment)', 'Admin\AggregatorSettingController::toggle/$1');
+
+// Routes untuk ProjectsController
+$routes->get('projects', 'ProjectsController::index');                    // List semua project
+$routes->get('projects/create', 'ProjectsController::create');            // Form tambah project
+$routes->post('projects/store', 'ProjectsController::store');             // Simpan project baru
+$routes->get('projects/show/(:num)', 'ProjectsController::show/$1');      // Lihat detail project
+$routes->get('projects/edit/(:num)', 'ProjectsController::edit/$1');      // Form edit project
+$routes->post('projects/update/(:num)', 'ProjectsController::update/$1'); // Simpan hasil edit
+$routes->get('projects/delete/(:num)', 'ProjectsController::delete/$1');  // Hapus project
+$routes->post('projects/delete/(:num)', 'ProjectsController::delete/$1');

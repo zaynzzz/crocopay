@@ -36,15 +36,20 @@
                             <?= esc($project['name']) ?>
                         </h3>
                         <div class="flex gap-2">
+                            <!-- Copy -->
                             <button onclick="copyToClipboard('api-key-<?= $project['id'] ?>')" 
                                     class="text-gray-400 hover:text-primary p-1 rounded-full hover:bg-gray-50">
                                 <i class="fas fa-copy text-sm"></i>
                             </button>
+
+                            <!-- Edit -->
                             <a href="<?= base_url('projects/edit/' . $project['id']) ?>" 
-                               class="text-gray-400 hover:text-blue-500 p-1 rounded-full hover:bg-gray-50">
+                            class="text-gray-400 hover:text-blue-500 p-1 rounded-full hover:bg-gray-50">
                                 <i class="fas fa-edit text-sm"></i>
                             </a>
+
                         </div>
+
                     </div>
                     
                     <div class="space-y-3">
@@ -76,7 +81,7 @@
                         <span class="text-xs text-gray-500">
                             Created: <?= date('d M Y', strtotime($project['created_at'])) ?>
                         </span>
-                        <a href="<?= base_url('projects/view/' . $project['id']) ?>" 
+                        <a href="<?= base_url('projects/show/' . $project['id']) ?>" 
                            class="text-xs text-primary hover:underline">
                             View Details
                         </a>
