@@ -4,6 +4,10 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\TransactionModel;
+use App\Libraries\Disbursement\CronosDisbursement;
+use App\Libraries\Disbursement\MidtransDisbursement;
+use App\Libraries\Disbursement\DisbursementInterface;
+use App\Libraries\Disbursement\DisbursementRouter;
 
 class TransactionController extends BaseController
 {
@@ -120,4 +124,44 @@ public function detail($id)
 
         return view('transactions/show', compact('transaction'));
     }
+public function createDisbursement()
+{
+    $payload = $this->request->getJSON(true);
+
+    $merchantId = session()->get('merchant_id');
+    $projectId = $payload['project_id'] ?? null;
+
+    $router = new DisbursementRouter();
+    $channels = $router->getChannels($merchantId, $projectId);
+
+    $primaryDisburser = $this->getDisburser($channels['primary']);
+    $fallbackDisburser = $channels['fallback'] ? $this->getDisburser($channels['fallback']) : null;
+
+    if (!$primaryDisburser) {
+        return $this->response->setStatusCode(400)->setJSON(['error' => 'Invalid disbursement channel']);
+    }
+
+    // Kirim via primary
+    $result = $primaryDisburser->send($payload);
+    // Jika gagal dan ada fallback
+
+    if ($result['status'] !== 'success' && $fallbackDisburser) {
+    return $this->response->setJSON($result);
+        $result['used_fallback'] = true;
+    }
+
+    return $this->response->setJSON($result);
+}
+
+private function getDisburser(string $channel): ?DisbursementInterface
+{
+     return match ($channel) {
+        'cronos'   => new \App\Libraries\Disbursement\CronosDisbursement(),
+        'midtrans' => new \App\Libraries\Disbursement\MidtransDisbursement(),
+        'brick'    => new \App\Libraries\Disbursement\BrickDisbursement(),
+        default    => null,
+    };
+}
+
+
 }

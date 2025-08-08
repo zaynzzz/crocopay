@@ -39,6 +39,8 @@ class Autoload extends AutoloadConfig
      */
     public $psr4 = [
         APP_NAMESPACE => APPPATH,
+            'App\\Libraries\\Disbursement\\' => APPPATH . 'Libraries/Disbursement',
+
     ];
 
     /**

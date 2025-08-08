@@ -25,7 +25,8 @@ class AuthController extends BaseController
                 $session->set([
                     'merchant_id' => $merchant['id'],
                     'merchant_name' => $merchant['name'],
-                    'is_logged_in' => true
+                    'isLoggedIn' => true,
+                    'isMerchant'  => true,
                 ]);
                 return redirect()->to('/dashboard');
             } else {

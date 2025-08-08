@@ -12,7 +12,7 @@ class AggregatorSettingModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields = ['name', 'enabled', 'is_primary', 'created_at', 'updated_at'];
+protected $allowedFields = ['name', 'enabled', 'is_primary', 'type', 'created_at', 'updated_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

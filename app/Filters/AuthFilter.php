@@ -6,11 +6,11 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Filters\FilterInterface;
 
-class MerchantAuth implements FilterInterface
+class AuthFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (! session()->get('isMerchant')) {
+        if (! session()->get('isLoggedIn')) {
             return redirect()->to('/login');
         }
     }

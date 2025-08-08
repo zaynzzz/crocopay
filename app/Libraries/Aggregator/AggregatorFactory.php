@@ -25,6 +25,7 @@ class AggregatorFactory
         return match ($name) {
             'cronos' => new CronosService($project),
             'midtrans' => new MidtransService($project),
+            'brick'    => new BrickAggregator($project), // <-- Tambahkan ini
             default => throw new \Exception("Aggregator {$name} tidak dikenali."),
         };
     }
